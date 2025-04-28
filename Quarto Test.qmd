@@ -1,0 +1,72 @@
+---
+title: "quarto intro notes"
+format: html
+editor: "visual"
+---
+
+### Quarto files
+
+## Definition
+
+# It's a mix of R scripts, the R console, and a Microsoft Word or Google Doc document
+
+# They create a version of HTML file of the script while done and saved in the same folder
+
+# Quarto files end with .qmd while HTML files end with .html
+
+# Both files can be modified, saved and shared
+
+# Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Creating a Quarto file
+
+# click New File \> Quarto Document
+
+# Rendering the file will create a type of output (html, word or PDF)
+
+## Contents of Quarto files
+
+# 1. YAML headers: always end and begin with three dashes (---) typed on its own line
+
+# Has the title, date, type of document (HTML, Word, PDF) information after rendering
+
+# 2. R code chunks: r codes are saved as chunk codes that starts with three back ticks (\`\`\`),
+
+# a pair of curly braces ({}), and they always end with three more back ticks
+
+# its an r code because of the “r” inside of the curly braces
+
+# The hash symbol always creates comments in Quarto files when typed inside of an R code chunk
+
+# 3. Markdown: all of the other text is called Markdown used to write comments and
+
+# basic instructions (body)
+
+# used to create html and CSS (cascading style sheets) sites
+
+# everything in between the R code chunks in our Quarto files is considered markdown by Quarto
+
+# The hash symbols create headings in the markdown language
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing
+
+```{r}
+
+```
+
+## Conclusion: Quarto files bring together R code, formatted text, and media in a single file
