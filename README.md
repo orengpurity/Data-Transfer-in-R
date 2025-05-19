@@ -1,0 +1,1 @@
+Includes the proper use of R different files, coding best practices and tools. The different processes used for data transfer in R are also described in the data transfer R script and quarto documents. 
