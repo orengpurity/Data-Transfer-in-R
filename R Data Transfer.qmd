@@ -1,0 +1,535 @@
+---
+title: "Data Transfer"
+author: "Oreng' Purity"
+format: html
+editor: visual
+---
+
+# Data Transfer
+
+-   Transferring of file formats into and out of R to a destination
+
+-   Types of file formats include; database files, spreadsheets, text files, SAS data sets, and Stata data sets
+
+-   R can store data in two formats;
+
+a\) Manually create dataframes using data.frames(), tibbles() or tribble() functions
+
+b\) Import data file in R (raw data)
+
+-   **Note;** manual ways are not always very practical – particularly when using have larger data set.
+
+## File paths
+
+-   MUST use the full file name and extension when importing and exporting data in R
+
+-   E.g., .csv
+
+/Users/bradcannell/Desktop/NTRHD/my_study_data.csv (On Mac)
+
+OR
+
+C:/Users/bradcannell/Desktop/NTRHD/my_study_data.csv (On Windows)
+
+-   **Note;** home is "/Users/bradcannell/" and should be different when using different PCs
+
+## Finding file paths
+
+1\. Absolute paths; the file path begins with the computer’s home directory
+
+-   Can:
+
+1st; type them manually
+
+-   OR
+
+2nd; On a Mac, right-click on the file we want the path for and a drop-down menu will appear. Then, click the **Get Info** menu option, copy the file path in the **Where** section of the **get info window** and paste it into our R code. On windows, hold down the shift key and right click on the file we want the path for. Then, click **Copy as path** in the drop-down menu that appears and paste the file path into our R code.
+
+2\. Relative paths
+
+-   Importing excel spreadsheets into R uses read_excel() function. E.g.,
+
+-   data \<- read_excel (copy-paste path to PC- either relative or absolute)
+
+-   Note; for absolute paths, work on the R project of interest and write the path. i.e.,
+
+```{r}
+data <- read_excel (mydata/purelabs.csv)
+data
+```
+
+# Sharing R files (including R projects)
+
+-   Share by:
+
+1.  Email
+
+2.  Shared cloud-based file storage service like Dropbox, Google Drive, or OneDrive
+
+3.  GitHub repository
+
+# Importing raw data in R
+
+## Types of raw data are;
+
+a). Plain text files
+
+-   Simple files that you (a human) can directly read using only your operating system’s plain text editor (i.e., Notepad on Windows or TextEdit on Mac) with .txt file extension
+
+-   They also include commonly shared as CSV (comma separated values) files (.csv file extension) or as Microsoft Excel files (.xls or .xlsx file extensions)
+
+-   Variations of plain text files:
+
+1.  Plain text files with data delimited by a single space
+
+2.  Plain text files with data delimited by tabs
+
+3.  Plain text files stored in a fixed width format
+
+4.  Plain text files with data delimited by commas - csv files
+
+b). Binary files
+
+-   More complex file types that can’t generally be read by humans without the use of special software
+
+-   Some examples include Microsoft Excel spreadsheets, SAS data sets, and Stata data sets
+
+    **Note;**
+
+-   R can only manipulate and analyze data that has been imported into R’s global environment
+
+-   Always include the file extension in your file paths
+
+## 1. Importing plain text files
+
+Packages used is readr
+
+```{r}
+install.packages("readr") 
+
+library(readr)
+```
+
+i). Space delimited/separated files
+
+-   a text file with values separated by a single space
+
+-   uses readr’s read_delim() function to import a data set with values that are
+
+-   delimited by a single space
+
+Example;
+
+First download the data to local PC
+
+```{r}
+single_space <- read_delim( file = "data/single_delimited.txt", delim = " " ) single_space
+```
+
+-   Specifying missing data values
+
+Replacing . with NA for missing values. By passing that information to the na argument of the read_delim() function
+
+```{r}
+single_space <- read_delim( file = "data/single_delimited.txt", delim = " ", na = "." ) 
+single_space
+```
+
+ii). Importing tab delimited/separated files
+
+-   contain values separated by tab characters instead of a single space
+
+-   are called tab separated value or tsv files, or they may be called tab-delimited files
+
+-   uses readr’s read_delim() function to import a data set with values that are delimited by a tab
+
+Example;
+
+First download the data to local PC
+
+```{r}
+tab <- read_delim (file = "data/tab.txt", delim = "\t") # means “tab” to R 
+                   
+tab
+```
+
+-   OR; can also use tab specific function of read_tsv()
+
+-   does exactly the same thing as the read_delim() function with the value of the delim argument set to "\t"
+
+```{r}
+tab <- read_tsv("data/tab.txt")
+
+tab
+```
+
+iii). Importing fixed width format files (fwf)
+
+-   use readr’s read_table() function to import data are not commonly used
+
+```{r}
+?read_table
+
+```
+
+Example;
+
+First download the data to local PC
+
+```{r}
+fixed <- read_table("data/fixed_width.txt")
+
+fixed
+```
+
+**Types of fwf files:**
+
+a\. Vector of column widths
+
+-   uses read_fwf() function
+
+```{r}
+?read_fwf
+
+```
+
+Example;
+
+First download the data to local PC
+
+```{r}
+fixed <- read_fwf( file = "data/fixed_width_no_space.txt", col_positions = fwf_widths( widths = c(3, 6, 5, 3), col_names = c("id", "sex", "ht_in", "wgt_lbs") ), skip = 1 ) 
+
+fixed 
+```
+
+------------------------------------------------------------------------
+
+**More arguments used:**
+
+-   file =; file path that tells R where to find the data set on your computer
+
+-   col_positions =; tells R the width (i.e., number of columns) that belong to each variable in the raw data set from the fwf_widths() function
+
+-   skip =; argument tells R how many rows to ignore before looking for data values in the raw data
+
+b\. Paired vector of start and end positions
+
+-   Tell R how which columns each variable starts and stops at in the raw data and uses read_fwf() function
+
+Example;
+
+First download the data to local PC
+
+```{r}
+fixed <- read_fwf( file = "data/fixed_width_no_space.txt", col_positions = fwf_positions( start = c(1, 4, 10, 15), end = c(3, 9, 11, 17), col_names = c("id", "sex", "ht_in", "wgt_lbs") ), skip = 1 )
+
+fixed
+```
+
+c\. Using named arguments
+
+-   Done by writing the two types (a and b) using named vectors
+
+-   uses either column widths or positions
+
+Example;
+
+Column widths:
+
+First download the data to local PC
+
+```{r}
+read_fwf( file = "data/fixed_width_no_space.txt", col_positions = fwf_cols( id = 3, sex = 6, ht_in = 5, wgt_lbs = 3 ), skip = 1 )
+
+```
+
+Column positions:
+
+```{r}
+read_fwf( file = "data/fixed_width_no_space.txt", col_positions = fwf_cols( id = c(1, 3), sex = c(4, 9), ht_in = c(10, 11), wgt_lbs = c(15, 17) ), skip = 1 )
+
+read_fwf
+```
+
+iv). Importing comma separated values files (csv)
+
+-   Most commonly used type of files
+
+-   use readr’s read_csv() function to import data
+
+Example;
+
+First download the data to local PC
+
+```{r}
+csv <- read_csv("data/comma.csv") 
+
+csv
+```
+
+## 2. Importing Binary Files
+
+-   uses software to import collection of data
+
+-   e.g., Microsoft Excel spreadsheets, SAS data sets (public metadata), and Stata data sets
+
+-   uses two packages:
+
+a). readxl; used to import Microsoft Excel files
+
+b). haven; used to import SAS and Stata data sets install and library the packages
+
+i). Importing Microsoft Excel spreadsheets
+
+-   Install and load readxl package
+
+```{r}
+install.packages(readxl) 
+
+library(readxl)
+```
+
+-   Uses the read_excel() function
+
+Example;
+
+First download the data to local PC
+
+```{r}
+excel <- read_excel("data/excel.xlsx")
+
+excel
+```
+
+**More arguments to use;**
+
+a\. sheet =; tells R which sheet of the Excel workbook contains the data you want to import
+
+b\. col_types =; a vector of character strings e.g.,:
+
+-   "skip" for telling R to ignore a column in the spreadsheet,
+
+-   "guess" for telling R to guess the variable type,
+
+-   "logical" for logical (TRUE/FALSE) variables,
+
+-   “numeric” for numeric variables,
+
+-   "date" for date variables,
+
+-   "text" for character variables, and
+
+-   "list" for everything else
+
+c\. col_names =; telling R to use the words in the character vector as column names, instead of the values in the first row of the raw data (the default)
+
+```{r}
+?readr::cols
+
+```
+
+d\. col_types =; tells R explicitly what type of values you want each column to contain by nesting a col\_ function for each column type inside the col() function, which is passed directly to the col-types argument
+
+Example;
+
+First download the data to local PC
+
+```{r}
+csv <- read_csv( file = "data/comma_complex.csv", col_names = c("id", "sex", "ht_in", "wgt_lbs"), col_types = cols( col_character(), col_character(), col_integer(), col_integer(), col_skip() ), skip = 3, na = c("", "NA", "Missing")) 
+
+csv
+```
+
+First download the data to local PC
+
+```{r}
+excel <- read_excel( path = "data/excel_complex.xlsx", sheet = "Study Phase 1", col_names = c("id", "sex", "ht_in", "wgt_lbs", "dob", "income"), col_types = c( "text", "text", "numeric", "numeric", "date", "numeric", "skip" ), skip = 3, na = c("", "NA", "Missing"))
+
+excel
+```
+
+ii). Importing data from other statistical analysis software
+
+-   Two popular statistical analysis applications – SAS and Stata
+
+-   Package used is "haven"
+
+-   Install and load the package
+
+```{r}
+install.packages(haven) 
+
+library(haven)
+```
+
+A). Importing SAS data sets (large data frames)
+
+-   allows users to save data in more than one type of binary format
+
+-   Data can be saved as:
+
+a\. SAS data sets; file names end with the .sas7bdat file extension
+
+b\. SAS Transport files; file names end with the .xpt file extension
+
+-   Importing a SAS data set uses the read_sas() function
+
+Example;
+
+First download the data to local PC
+
+```{r}
+sas <- read_sas("data/height_and_weight.sas7bdat")
+
+sas
+```
+
+-   **Note;** data that has been altered in SAS can also be saved as a SAS transport file.
+
+-   Some of the national, population-based public health surveys, #(e.g., BRFSS and NHANES) make their data publicly available in this format
+
+**Importing zipped transport file**
+
+-   Done by passing the path to the zipped .xpt file directly to the read_xpt() function
+
+Example;
+
+First download the data to local PC
+
+```{r}
+brfss_2018 <- read_xpt("data/LLCP2018XPT.zip") 
+
+brfss_2018 
+
+head(brfss_2018)
+```
+
+**Importing SAS files directly from the internet**
+
+-   Copy link address online (data repository e.g., demographic surveys)
+
+-   use read_xpt() function to download it to R
+
+Example;
+
+survey \<- read_apt("link") i.e.,
+
+```{r}
+nhanes_demo <- read_xpt("https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/DEMO_J.XPT") 
+
+head(nhanes_demo)
+```
+
+B). Importing Stata data sets
+
+-   import a Stata data set (.dta)
+
+-   uses the read_stata() function
+
+Example;
+
+First download the data to local PC
+
+```{r}
+stata <- read_stata("data/height_and_weight.dta") 
+
+stata
+```
+
+# RStudio’s Data Import Tool
+
+-   uses the **Import Dataset** dropdown menu near the top of the environment pane.
+
+Example;
+
+**Importing csv file**
+
+1\. click the Import Dataset dropdown menu,
+
+2\. choose the From Text (readr),- a separate data import window will open
+
+3\. click the browse button to locate the file csv file, - opens file explorer window
+
+4\. find and select the csv file, After selecting you file, there will be some changes in the data import window. Components of the window;
+
+-   File/URL; path to the raw csv data
+
+-   Data Preview; preview of how R is currently parsing the csv data
+
+-   Code Preview; code that R is currently using to import the csv data
+
+At this point;
+
+you can change the variable type by: clicking in the column headers in the **Data Preview** field, a dropdown menu will display that allows you to **change variable types**
+
+-   **Note;** This is equivalent to adjusting the default values passed to the, col_types argument of the read_csv() function.
+
+5\. Import data by;
+
+-   pressing the Import button in the bottom-right corner of the data import window
+
+OR;
+
+-   run the code as though you wrote it, by; click the clipboard icon to copy the code displayed in the **Code Preview window**, and then click the **Cancel** button, return to your R script or R Markdown file and paste the code
+
+# Exporting Data
+
+-   Normally, data frames are stored in environment temporarily, from one programming session to the next
+
+-   Aim; learn to export data from R’s memory to a file on your hard drive so that, you may efficiently store it or share it with others
+
+1.  Plain text files
+
+Example;
+
+-   Export data from R's environment to a csv file on my computer’s desktop:
+
+-   Uses readr package
+
+-   install and load package
+
+```{r}
+install.packages(readr)
+
+library(readr)
+```
+
+-   readr contains write_csv() function for exporting data frames in the .csv file format
+
+Example;
+
+```{r}
+library(dplyr) 
+
+demo <- tibble( id = c("001", "002", "003", "004"), age = c(30, 67, 52, 56), edu = c(3, 1, 4, 2)) 
+
+demo 
+
+readr::write_csv(demo, "/Users/purity/Desktop/demo.csv") 
+demo 
+
+?write_csv
+```
+
+2.  R binary files
+
+-   Uses readr package and exports in .Rdata and the .Rds formats
+
+    Example;
+
+-   using the .Rds format to save R data frames
+
+-   uses writr_rds() functions
+
+```{r}
+readr::write_rds(demo, "/Users/purity/Desktop/demo.rds")
+
+demo
+```
+
+-   loading the .Rds data back into your global environment
+
+```{r}
+demo <- readr::read_rds("/Users/purity/Desktop/demo.rds")
+```

@@ -1,0 +1,112 @@
+---
+title: "R File Formats"
+author: "Oreng' Purity"
+format: html
+editor: "visual"
+---
+
+# Types of scripts
+
+1.  R scripts (extension file is .R)
+2.  Markdown files (extension file is .Rmd)
+3.  Quarto files (extension file is .qmd)
+
+# Quarto files
+
+## Definition
+
+-   It's a mix of R scripts, the R console, and a Microsoft Word or Google Doc document
+
+-   They create a version of HTML file of the script while done and saved in the same folder
+
+-   Quarto files end with .qmd while HTML files end with .html
+
+-   Both files can be modified, saved and shared
+
+-   Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Creating a Quarto file
+
+-   click New File \> Quarto Document
+
+-   Rendering the file will create a type of output (html, word or PDF)
+
+## Contents of Quarto files
+
+1\. YAML headers: always end and begin with three dashes (---) typed on its own line
+
+-   Has the title, date, type of document (HTML, Word, PDF) information after rendering
+
+2\. R code chunks: r codes are saved as chunk codes that starts with three back ticks (\`\`\`), a pair of curly braces ({}), and they always end with three more back ticks
+
+-   its an r code because of the “r” inside of the curly braces
+
+-   The hash symbol always creates comments in Quarto files when typed inside of an R code chunk
+
+3\. Markdown: all of the other text is called Markdown used to write comments and basic instructions (body)
+
+-   used to create html and CSS (cascading style sheets) sites
+
+-   everything in between the R code chunks in our Quarto files is considered markdown by Quarto
+
+-   The hash symbols create headings in the markdown language
+
+## Conclusion: 
+
+-   Quarto files bring together R code, formatted text, and media in a single file
+
+# R projects
+
+-   are a great tool for helping us organize and manage collections of files
+
+-   organizing our files into R projects allows us to use relative file paths, instead of absolute file paths, which will make it much easier for to collaborate with others
+
+# Coding best practices
+
+## General principles
+
+1\. Comment my codes
+
+2\. Use a style consistently
+
+## Notes
+
+\# Can include **code book** or **data dictionary**:
+
+-   These are text files that contain information about the data set that are
+
+-   intended to provide you with some of that more detailed information
+
+\# Good coding style is like using correct punctuation
+
+\# Put a space in between the pound/hash sign and the rest of your text when writing comments
+
+\# Use acronyms than long names, in case of long names, separate with underscores or dots
+
+\# Use all lower case
+
+# Using Pipe functions (\|\> or %\>%)
+
+-   Passes the results of one function to the next after another (nesting) and gives the final last output from the last command
+
+-   should always have a space in front of it and after
+
+Example
+
+lpi \<- seq(from = 2, to = 100, by = 2) \|\> log() \|\> mean() lpi
+
+Using filter functions - filters()
+
+\# First value = data frame name (height_and_weight)
+
+\# Second value = condition for keeping rows (when the value of sex is Female)
+
+Example
+
+Simulate some data
+
+height_and_weight \<- tibble( id = c("001", "002", "003", "004", "005"), sex = c("Male", "Male", "Female", "Female", "Male"), ht_in = c(71, 69, 64, 65, 73), wt_lbs = c(190, 176, 130, 154, 173)) height_and_weight filter(height_and_weight, sex == "Female") \# fishes out the two rows
+
+Piping and filtering
+
+female_height_and_weight \<- height_and_weight \|\> \# Line 1 filter(sex == "Female") \|\> \# Line 2 summarise( \# Line 3 mean_ht = mean(ht_in), \# Line 4 sd_ht = sd(ht_in) \# Line 5 ) \|\> \# Line 6 print() \# Line 7
